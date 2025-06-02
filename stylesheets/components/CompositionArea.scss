@@ -51,8 +51,15 @@
         border: 1px solid variables.$color-gray-75;
       }
       @include mixins.blue-theme {
-        background: #ffffff;
-        border: 1px solid variables.$blue-border;
+        background: variables.$blue-input-background;
+        border: 1px solid variables.$blue-input-border;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 136, 204, 0.1);
+        
+        &:focus-within {
+          border-color: variables.$blue-primary;
+          box-shadow: 0 0 0 2px rgba(0, 136, 204, 0.2);
+        }
       }
     }
   }

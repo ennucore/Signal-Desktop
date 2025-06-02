@@ -5298,6 +5298,15 @@ button.module-calling-participants-list__contact {
             border-color: variables.$color-gray-75;
           }
         }
+        @include mixins.blue-theme {
+          background-color: rgba(0, 136, 204, 0.05);
+          border-radius: 8px;
+          margin-inline: 4px;
+          transition: all 0.2s ease;
+          #{$unread-indicator} {
+            border-color: rgba(0, 136, 204, 0.05);
+          }
+        }
       }
 
       &--is-selected {
@@ -5312,7 +5321,17 @@ button.module-calling-participants-list__contact {
           background-color: variables.$color-ultramarine-alpha-20;
         }
         @include mixins.blue-theme {
-          background-color: variables.$blue-light;
+          background-color: variables.$blue-chat-selected;
+          border-radius: 8px;
+          margin-inline: 4px;
+          
+          &::before {
+            display: none; // Remove the left border for blue theme
+          }
+          
+          // Add a subtle gradient background
+          background: linear-gradient(135deg, variables.$blue-chat-selected 0%, #f0f8ff 100%);
+          border: 1px solid variables.$blue-border;
         }
         
         &::before {

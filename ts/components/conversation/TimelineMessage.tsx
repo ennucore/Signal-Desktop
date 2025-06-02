@@ -299,9 +299,13 @@ export function TimelineMessage(props: Props): JSX.Element {
         
         const root = document.createElement('div');
         root.style.position = 'fixed'; // Use fixed positioning for mouse coordinates
-        root.style.top = `${mouseY - 140}px`; // Position higher above the mouse cursor to avoid overlap
-        root.style.left = `${mouseX + 10}px`; // Position slightly to the right of mouse
-        root.style.zIndex = '1001';
+        
+        // Position the reaction picker directly above where the context menu will appear
+        // The context menu appears at the mouse position, so we position the reaction picker
+        // just above that. We'll use a small offset to account for the reaction picker height.
+        root.style.top = `${mouseY - 60}px`; // Position directly above the context menu
+        root.style.left = `${mouseX}px`; // Align with the left edge of the context menu
+        root.style.zIndex = '10000'; // Higher than context menu z-index
         document.body.appendChild(root);
         setReactionPickerRoot(root);
       }
