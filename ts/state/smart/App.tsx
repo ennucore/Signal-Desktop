@@ -20,6 +20,7 @@ import {
   getTheme,
 } from '../selectors/user';
 import { hasSelectedStoryData as getHasSelectedStoryData } from '../selectors/stories';
+import { getItems } from '../selectors/items';
 import { useAppActions } from '../ducks/app';
 import { useConversationsActions } from '../ducks/conversations';
 import { useStoriesActions } from '../ducks/stories';
@@ -115,6 +116,8 @@ export const SmartApp = memo(function SmartApp() {
   const isMaximized = useSelector(getIsMainWindowMaximized);
   const isFullScreen = useSelector(getIsMainWindowFullScreen);
   const hasSelectedStoryData = useSelector(getHasSelectedStoryData);
+  const items = useSelector(getItems);
+  const hasSingleLineMessages = items.hasSingleLineMessages ?? false;
   const theme = useSelector(getTheme);
 
   const { openInbox } = useAppActions();
@@ -135,6 +138,7 @@ export const SmartApp = memo(function SmartApp() {
         renderGlobalModalContainer={renderGlobalModalContainer}
         renderLightbox={renderLightbox}
         hasSelectedStoryData={hasSelectedStoryData}
+        hasSingleLineMessages={hasSingleLineMessages}
         readyForUpdates={readyForUpdates}
         renderStoryViewer={renderStoryViewer}
         renderInbox={renderInbox}

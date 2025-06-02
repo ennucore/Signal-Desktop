@@ -525,6 +525,8 @@ export function SmartPreferences(): JSX.Element {
   );
   const [hasAlternativeInteractions, onAlternativeInteractionsChange] =
     createItemsAccess('hasAlternativeInteractions', false);
+  const [hasSingleLineMessages, onSingleLineMessagesChange] =
+    createItemsAccess('hasSingleLineMessages', false);
   const [hasTextFormatting, onTextFormattingChange] = createItemsAccess(
     'textFormatting',
     true
@@ -631,6 +633,7 @@ export function SmartPreferences(): JSX.Element {
         hasSpellCheck={hasSpellCheck}
         hasStoriesDisabled={hasStoriesDisabled}
         hasAlternativeInteractions={hasAlternativeInteractions}
+        hasSingleLineMessages={hasSingleLineMessages}
         hasTextFormatting={hasTextFormatting}
         hasTypingIndicators={hasTypingIndicators}
         i18n={i18n}
@@ -685,7 +688,6 @@ export function SmartPreferences(): JSX.Element {
         onSelectedSpeakerChange={onSelectedSpeakerChange}
         onSentMediaQualityChange={onSentMediaQualityChange}
         onSpellCheckChange={onSpellCheckChange}
-        onAlternativeInteractionsChange={onAlternativeInteractionsChange}
         onTextFormattingChange={onTextFormattingChange}
         onThemeChange={onThemeChange}
         onToggleNavTabsCollapse={toggleNavTabsCollapse}
@@ -714,6 +716,8 @@ export function SmartPreferences(): JSX.Element {
         whoCanFindMe={whoCanFindMe}
         whoCanSeeMe={whoCanSeeMe}
         zoomFactor={zoomFactor}
+        onAlternativeInteractionsChange={onAlternativeInteractionsChange}
+        onSingleLineMessagesChange={onSingleLineMessagesChange}
       />
     </StrictMode>
   );

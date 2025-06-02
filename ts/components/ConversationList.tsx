@@ -217,9 +217,11 @@ export type PropsType = {
   showFindByUsername: () => void;
   showFindByPhoneNumber: () => void;
   showConversation: ShowConversationType;
+  hasSingleLineMessages: boolean;
 } & LookupConversationWithoutServiceIdActionsType;
 
 const NORMAL_ROW_HEIGHT = 76;
+const SINGLE_LINE_ROW_HEIGHT = 64;
 const SELECT_ROW_HEIGHT = 52;
 const HEADER_ROW_HEIGHT = 40;
 
@@ -252,13 +254,14 @@ export function ConversationList({
   setIsFetchingUUID,
   showConversation,
   theme,
+  hasSingleLineMessages,
 }: PropsType): JSX.Element | null {
   const calculateRowHeight = useCallback(
     (index: number): number => {
       const row = getRow(index);
       if (!row) {
         assertDev(false, `Expected a row at index ${index}`);
-        return NORMAL_ROW_HEIGHT;
+        return hasSingleLineMessages ? SINGLE_LINE_ROW_HEIGHT : NORMAL_ROW_HEIGHT;
       }
       switch (row.type) {
         case RowType.Header:
@@ -272,10 +275,10 @@ export function ConversationList({
         case RowType.FindByPhoneNumber:
           return SELECT_ROW_HEIGHT;
         default:
-          return NORMAL_ROW_HEIGHT;
+          return hasSingleLineMessages ? SINGLE_LINE_ROW_HEIGHT : NORMAL_ROW_HEIGHT;
       }
     },
-    [getRow]
+    [getRow, hasSingleLineMessages]
   );
 
   const renderRow: ListRowRenderer = useCallback(

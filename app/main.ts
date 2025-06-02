@@ -342,7 +342,7 @@ async function getThemeSetting({
 
   // Default to `system` if setting doesn't exist or is invalid
   const validatedResult =
-    value === 'light' || value === 'dark' || value === 'system'
+    value === 'light' || value === 'dark' || value === 'system' || value === 'blue'
       ? value
       : 'system';
 
@@ -361,6 +361,9 @@ async function getResolvedThemeSetting(
   if (theme === 'system') {
     return nativeTheme.shouldUseDarkColors ? ThemeType.dark : ThemeType.light;
   }
+  if (theme === 'blue') {
+    return ThemeType.blue;
+  }
   return ThemeType[theme];
 }
 
@@ -374,12 +377,16 @@ async function getBackgroundColor(
 ): Promise<string> {
   const theme = await getResolvedThemeSetting(options);
 
-  if (theme === 'light') {
+  if (theme === ThemeType.light) {
     return options?.signalColors ? '#3a76f0' : '#ffffff';
   }
 
-  if (theme === 'dark') {
+  if (theme === ThemeType.dark) {
     return '#121212';
+  }
+
+  if (theme === ThemeType.blue) {
+    return options?.signalColors ? '#0088cc' : '#f4f7fc';
   }
 
   throw missingCaseError(theme);

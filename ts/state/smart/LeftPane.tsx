@@ -63,6 +63,7 @@ import {
   getServerAlerts,
   getUsernameCorrupted,
   getUsernameLinkCorrupted,
+  getHasSingleLineMessages,
 } from '../selectors/items';
 import {
   getChallengeStatus,
@@ -299,6 +300,7 @@ export const SmartLeftPane = memo(function SmartLeftPane({
     getBackupMediaDownloadProgress
   );
   const isOnline = useSelector(getNetworkIsOnline);
+  const hasSingleLineMessages = useSelector(getHasSingleLineMessages);
 
   const serverAlerts = useSelector(getServerAlerts);
 
@@ -454,6 +456,7 @@ export const SmartLeftPane = memo(function SmartLeftPane({
       usernameCorrupted={usernameCorrupted}
       usernameLinkCorrupted={usernameLinkCorrupted}
       updateFilterByUnread={updateFilterByUnread}
+      hasSingleLineMessages={hasSingleLineMessages}
     />
   );
 });

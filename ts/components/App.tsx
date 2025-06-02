@@ -29,6 +29,7 @@ type PropsType = {
   renderCallManager: () => JSX.Element;
   renderGlobalModalContainer: () => JSX.Element;
   hasSelectedStoryData: boolean;
+  hasSingleLineMessages: boolean;
   readyForUpdates: () => void;
   renderStoryViewer: (closeView: () => unknown) => JSX.Element;
   renderLightbox: () => JSX.Element | null;
@@ -51,6 +52,7 @@ export function App({
   state,
   getCaptchaToken,
   hasSelectedStoryData,
+  hasSingleLineMessages,
   isFullScreen,
   isMaximized,
   openInbox,
@@ -134,6 +136,10 @@ export function App({
   useEffect(() => {
     document.body.classList.toggle('page-is-visible', isPageVisible);
   }, [isPageVisible]);
+
+  useEffect(() => {
+    document.body.classList.toggle('single-line-messages', hasSingleLineMessages);
+  }, [hasSingleLineMessages]);
 
   return (
     <div

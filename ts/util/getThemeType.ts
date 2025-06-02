@@ -15,6 +15,10 @@ export async function getThemeType(): Promise<ThemeType> {
     return ThemeType.dark;
   }
 
+  if (themeSetting === 'blue') {
+    return ThemeType.blue;
+  }
+
   if (themeSetting === 'system') {
     if (window.systemTheme === SystemThemeType.light) {
       return ThemeType.light;

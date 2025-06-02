@@ -340,6 +340,12 @@ $message-padding-horizontal: 12px;
   padding-top: $message-padding-vertical;
   padding-bottom: $message-padding-vertical;
 
+  @include mixins.blue-theme {
+    border-radius: 20px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+  }
+
   .module-message--collapsed-above & {
     margin-top: 1px;
   }
@@ -349,15 +355,27 @@ $message-padding-horizontal: 12px;
 
   .module-message--incoming.module-message--collapsed-above & {
     border-start-start-radius: $collapsed-border-radius;
+    @include mixins.blue-theme {
+      border-start-start-radius: 6px;
+    }
   }
   .module-message--incoming.module-message--collapsed-below & {
     border-end-start-radius: $collapsed-border-radius;
+    @include mixins.blue-theme {
+      border-end-start-radius: 6px;
+    }
   }
   .module-message--outgoing.module-message--collapsed-above & {
     border-start-end-radius: $collapsed-border-radius;
+    @include mixins.blue-theme {
+      border-start-end-radius: 6px;
+    }
   }
   .module-message--outgoing.module-message--collapsed-below & {
     border-end-end-radius: $collapsed-border-radius;
+    @include mixins.blue-theme {
+      border-end-end-radius: 6px;
+    }
   }
 }
 
@@ -471,6 +489,11 @@ $message-padding-horizontal: 12px;
     background-color: variables.$color-ultramarine;
     color: variables.$color-gray-05;
   }
+  @include mixins.blue-theme {
+    background: linear-gradient(135deg, variables.$blue-message-bubble 0%, variables.$blue-gradient-end 100%);
+    color: variables.$blue-message-text;
+    box-shadow: 0 1px 2px rgba(0, 136, 204, 0.2);
+  }
 }
 
 // In case the color gets messed up
@@ -481,6 +504,12 @@ $message-padding-horizontal: 12px;
   @include mixins.dark-theme {
     background-color: variables.$color-gray-75;
     color: variables.$color-gray-05;
+  }
+  @include mixins.blue-theme {
+    background-color: variables.$blue-card;
+    color: variables.$blue-text;
+    border: 1px solid variables.$blue-border;
+    box-shadow: 0 1px 2px rgba(0, 136, 204, 0.1);
   }
 }
 
@@ -5093,7 +5122,7 @@ button.module-calling-participants-list__contact {
   $normal-row-height: 72px;
 
   @include mixins.NavTabs__Scroller;
-  padding-inline: 10px;
+  padding-inline: 0px;
 
   // list tiles in choose-group-members and compose extend to the edge
   .module-left-pane--mode-choose-group-members &,
@@ -5125,6 +5154,7 @@ button.module-calling-participants-list__contact {
         line-height: $normal-row-height;
         text-align: center;
         width: 100%;
+        padding-block: 0;
         padding-inline: 18px;
         display: flex;
 
@@ -5220,10 +5250,16 @@ button.module-calling-participants-list__contact {
         height: $normal-row-height;
         margin-block: 2px;
         margin-inline: 0;
-        padding-block: 8px;
+        padding-block: 0px;
         padding-inline: 14px;
         user-select: none;
         width: 100%;
+      }
+
+      // Reduce vertical padding when single-line messages are enabled
+      .single-line-messages & {
+        padding-block: 4px;
+        height: 64px;
       }
 
       #{$unread-indicator} {
@@ -5420,6 +5456,11 @@ button.module-calling-participants-list__contact {
             display: none;
           }
 
+          // Adjust header positioning for single-line messages
+          .single-line-messages & {
+            margin-top: -2px;
+          }
+
           &__name {
             align-items: center;
             display: flex;
@@ -5498,6 +5539,11 @@ button.module-calling-participants-list__contact {
             justify-content: flex-start;
           }
 
+          // Adjust message positioning for single-line messages
+          .single-line-messages & {
+            margin-top: 2px;
+          }
+
           &__text {
             .module-conversation-list__item--contact-or-conversation--is-checkbox
               & {
@@ -5530,8 +5576,17 @@ button.module-calling-participants-list__contact {
               display: none;
             }
 
+            // Single-line messages setting
+            .single-line-messages & {
+              -webkit-line-clamp: 1;
+            }
+
             &--always-full-size {
               height: 36px; // two lines
+              
+              .single-line-messages & {
+                height: 18px; // one line
+              }
             }
 
             &__blocked {
@@ -5565,6 +5620,19 @@ button.module-calling-participants-list__contact {
             &__deleted-for-everyone {
               font-style: italic;
               margin-inline-end: 3px;
+            }
+
+            // Make sender name blue in group chats
+            &__draft-prefix {
+              @include mixins.light-theme {
+                color: variables.$color-ultramarine;
+              }
+              @include mixins.dark-theme {
+                color: variables.$color-ultramarine-light;
+              }
+              @include mixins.blue-theme {
+                color: variables.$blue-primary;
+              }
             }
 
             &__status-icon {
@@ -8197,3 +8265,4 @@ button.module-calling-participants-list__contact {
   margin-top: 4px;
   margin-bottom: 4px;
 }
+

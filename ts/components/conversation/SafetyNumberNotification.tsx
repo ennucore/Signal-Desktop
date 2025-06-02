@@ -49,6 +49,7 @@ export function SafetyNumberNotification({
   return (
     <SystemMessage
       icon="safety-number"
+      compact={true}
       contents={
         isGroup ? (
           <I18n

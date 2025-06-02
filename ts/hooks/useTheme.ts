@@ -30,6 +30,8 @@ export const useTheme = (): ThemeType => {
 
       if (newTheme === 'dark') {
         updateTheme(ThemeType.dark);
+      } else if (newTheme === 'blue') {
+        updateTheme(ThemeType.blue);
       } else {
         updateTheme(ThemeType.light);
       }

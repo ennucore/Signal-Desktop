@@ -296,4 +296,22 @@
   &__button-container {
     margin-top: 12px;
   }
+
+  // Compact variant for inline button layout (used in safety number notifications)
+  &--compact {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    .SystemMessage__contents {
+      text-align: start;
+      margin: 0;
+    }
+
+    .SystemMessage__button-container {
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+  }
 }

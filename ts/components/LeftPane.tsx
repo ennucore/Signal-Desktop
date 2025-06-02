@@ -80,6 +80,7 @@ export type PropsType = {
   unsupportedOSDialogType: 'error' | 'warning' | undefined;
   usernameCorrupted: boolean;
   usernameLinkCorrupted: boolean;
+  hasSingleLineMessages: boolean;
 
   // These help prevent invalid states. For example, we don't need the list of pinned
   //   conversations if we're trying to start a new conversation. Ideally these would be
@@ -272,6 +273,7 @@ export function LeftPane({
   updateSearchTerm,
   dismissBackupMediaDownloadBanner,
   updateFilterByUnread,
+  hasSingleLineMessages,
 }: PropsType): JSX.Element {
   const previousModeSpecificProps = usePrevious(
     modeSpecificProps,
@@ -875,6 +877,7 @@ export function LeftPane({
                 showFindByUsername={showFindByUsername}
                 showFindByPhoneNumber={showFindByPhoneNumber}
                 theme={theme}
+                hasSingleLineMessages={hasSingleLineMessages}
               />
             </div>
           </div>

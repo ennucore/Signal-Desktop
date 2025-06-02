@@ -95,6 +95,7 @@ export type StorageAccessType = {
   hasViewedOnboardingStory: boolean;
   hasStoriesDisabled: boolean;
   hasAlternativeInteractions: boolean;
+  hasSingleLineMessages: boolean;
   storyViewReceiptsEnabled: boolean | undefined;
   identityKeyMap: IdentityKeyMap;
   lastAttemptedToRefreshProfilesAt: number;

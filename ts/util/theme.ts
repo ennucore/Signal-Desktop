@@ -26,6 +26,8 @@ export function themeClassName2(theme: ThemeType): string {
       return 'light-theme';
     case ThemeType.dark:
       return 'dark-theme';
+    case ThemeType.blue:
+      return 'blue-theme';
     default:
       throw missingCaseError(theme);
   }
@@ -37,6 +39,8 @@ export function getThemeByThemeType(theme: ThemeType): Theme {
       return Theme.Light;
     case ThemeType.dark:
       return Theme.Dark;
+    case ThemeType.blue:
+      return Theme.Light;
     default:
       throw missingCaseError(theme);
   }

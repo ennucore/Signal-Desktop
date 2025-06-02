@@ -279,3 +279,8 @@ export const getServerAlerts = createSelector(
   getItems,
   (state: ItemsStateType) => state.serverAlerts ?? {}
 );
+
+export const getHasSingleLineMessages = createSelector(
+  getItems,
+  (state: ItemsStateType): boolean => Boolean(state.hasSingleLineMessages ?? false)
+);

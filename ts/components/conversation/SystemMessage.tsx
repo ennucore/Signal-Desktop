@@ -50,11 +50,12 @@ export type PropsType = {
   contents: ReactNode;
   button?: ReactNode;
   kind?: SystemMessageKind;
+  compact?: boolean;
 };
 
 export const SystemMessage = forwardRef<HTMLDivElement, PropsType>(
   function SystemMessageInner(
-    { icon, contents, button, kind = SystemMessageKind.Normal },
+    { icon, contents, button, kind = SystemMessageKind.Normal, compact = false },
     ref
   ) {
     return (
@@ -62,7 +63,8 @@ export const SystemMessage = forwardRef<HTMLDivElement, PropsType>(
         className={classNames(
           'SystemMessage',
           kind === SystemMessageKind.Danger && 'SystemMessage--danger',
-          kind === SystemMessageKind.Error && 'SystemMessage--error'
+          kind === SystemMessageKind.Error && 'SystemMessage--error',
+          compact && 'SystemMessage--compact'
         )}
         ref={ref}
       >

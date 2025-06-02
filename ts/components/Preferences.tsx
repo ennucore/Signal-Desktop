@@ -95,6 +95,7 @@ export type PropsDataType = {
   hasAutoConvertEmoji: boolean;
   hasAutoDownloadUpdate: boolean;
   hasAutoLaunch: boolean | undefined;
+  hasSingleLineMessages: boolean;
   hasCallNotifications: boolean;
   hasCallRingtoneNotification: boolean;
   hasContentProtection: boolean | undefined;
@@ -230,6 +231,7 @@ type PropsFunctionType = {
   onWhoCanSeeMeChange: SelectChangeHandlerType<PhoneNumberSharingMode>;
   onWhoCanFindMeChange: SelectChangeHandlerType<PhoneNumberDiscoverability>;
   onZoomFactorChange: SelectChangeHandlerType<ZoomFactorType>;
+  onSingleLineMessagesChange: CheckboxChangeHandlerType;
 
   // Localization
   i18n: LocalizerType;
@@ -308,6 +310,7 @@ export function Preferences({
   hasAutoConvertEmoji,
   hasAutoDownloadUpdate,
   hasAutoLaunch,
+  hasSingleLineMessages,
   hasCallNotifications,
   hasCallRingtoneNotification,
   hasContentProtection,
@@ -385,6 +388,7 @@ export function Preferences({
   onWhoCanSeeMeChange,
   onWhoCanFindMeChange,
   onZoomFactorChange,
+  onSingleLineMessagesChange,
   otherTabsUnreadStats,
   phoneNumber = '',
   preferredSystemLocales,
@@ -995,6 +999,14 @@ export function Preferences({
             moduleClassName="Preferences__checkbox"
             name="alternativeInteractions"
             onChange={onAlternativeInteractionsChange}
+          />
+          <Checkbox
+            checked={hasSingleLineMessages}
+            description="Show only one line of message text in conversation list"
+            label="Single-line messages"
+            moduleClassName="Preferences__checkbox"
+            name="singleLineMessages"
+            onChange={onSingleLineMessagesChange}
           />
           <SettingsRow>
             <Control
