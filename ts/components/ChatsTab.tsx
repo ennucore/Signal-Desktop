@@ -1,7 +1,7 @@
 // Copyright 2023 Signal Messenger, LLC
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { LocalizerType } from '../types/I18N';
 import type { NavTabPanelProps } from './NavTabs';
 import { WhatsNewLink } from './WhatsNewLink';
@@ -21,6 +21,7 @@ export type ChatsTabProps = Readonly<{
   renderMiniPlayer: (options: { shouldFlow: boolean }) => JSX.Element;
   selectedConversationId: string | undefined;
   showWhatsNewModal: () => unknown;
+  clearConversationSelection?: () => void;
 }>;
 
 export function ChatsTab({
@@ -36,7 +37,24 @@ export function ChatsTab({
   renderMiniPlayer,
   selectedConversationId,
   showWhatsNewModal,
+  clearConversationSelection,
 }: ChatsTabProps): JSX.Element {
+
+  // Handle Esc key to clear conversation selection
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && selectedConversationId && clearConversationSelection) {
+        event.preventDefault();
+        clearConversationSelection();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedConversationId, clearConversationSelection]);
+
   return (
     <>
       <div id="LeftPane">

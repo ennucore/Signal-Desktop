@@ -5301,23 +5301,37 @@ button.module-calling-participants-list__contact {
       }
 
       &--is-selected {
+        position: relative;
+        margin-left: 0;
+        margin-right: 0;
+        
         @include mixins.light-theme {
-          background-color: variables.$color-gray-15;
+          background-color: variables.$color-ultramarine-alpha-06;
         }
         @include mixins.dark-theme {
-          background-color: variables.$color-gray-65;
+          background-color: variables.$color-ultramarine-alpha-20;
         }
-      }
-
-      &--is-selected &__avatar-container {
-        @include mixins.light-theme {
-          #{$unread-indicator} {
-            border-color: variables.$color-gray-15;
+        @include mixins.telegram-blue-theme {
+          background-color: variables.$telegram-blue-light;
+        }
+        
+        // Add a left border accent like Telegram
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 4px;
+          
+          @include mixins.light-theme {
+            background-color: variables.$color-ultramarine;
           }
-        }
-        @include mixins.dark-theme {
-          #{$unread-indicator} {
-            border-color: variables.$color-gray-65;
+          @include mixins.dark-theme {
+            background-color: variables.$color-ultramarine;
+          }
+          @include mixins.telegram-blue-theme {
+            background-color: variables.$telegram-blue-primary;
           }
         }
       }

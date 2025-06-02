@@ -133,6 +133,8 @@ export function TimelineMessage(props: Props): JSX.Element {
   const [reactionPickerRoot, setReactionPickerRoot] = useState<
     HTMLDivElement | undefined
   >(undefined);
+  const [isHoveringReactionButton, setIsHoveringReactionButton] = useState(false);
+  const [isHoveringPicker, setIsHoveringPicker] = useState(false);
   const menuTriggerRef = useRef<ContextMenuTriggerType | null>(null);
 
   const isWindowWidthNotNarrow =
@@ -164,6 +166,8 @@ export function TimelineMessage(props: Props): JSX.Element {
       if (reactionPickerRoot) {
         document.body.removeChild(reactionPickerRoot);
         setReactionPickerRoot(undefined);
+        setIsHoveringReactionButton(false);
+        setIsHoveringPicker(false);
         return;
       }
 
@@ -184,6 +188,20 @@ export function TimelineMessage(props: Props): JSX.Element {
       toggleReactionPicker(true);
     },
   });
+
+  // Close picker when not hovering over either button or picker
+  useEffect(() => {
+    if (reactionPickerRoot && !isHoveringReactionButton && !isHoveringPicker) {
+      // Small delay to prevent flicker when moving between elements
+      const timeoutId = setTimeout(() => {
+        if (!isHoveringReactionButton && !isHoveringPicker) {
+          toggleReactionPicker(true);
+        }
+      }, 50);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [reactionPickerRoot, isHoveringReactionButton, isHoveringPicker, toggleReactionPicker]);
 
   useEffect(() => {
     let cleanUpHandler: (() => void) | undefined;
@@ -297,6 +315,8 @@ export function TimelineMessage(props: Props): JSX.Element {
           onDownload={handleDownload}
           onReplyToMessage={canReply ? handleReplyToMessage : undefined}
           onReact={canReact ? handleReact : undefined}
+          reactionPickerRoot={reactionPickerRoot}
+          setIsHoveringReactionButton={setIsHoveringReactionButton}
         />
         {reactionPickerRoot &&
           createPortal(
@@ -308,20 +328,25 @@ export function TimelineMessage(props: Props): JSX.Element {
               ]}
             >
               {({ ref, style }) =>
-                renderReactionPicker({
-                  ref,
-                  style,
-                  selected: selectedReaction,
-                  onClose: toggleReactionPicker,
-                  onPick: emoji => {
-                    toggleReactionPicker(true);
-                    reactToMessage(id, {
-                      emoji,
-                      remove: emoji === selectedReaction,
-                    });
-                  },
-                  renderEmojiPicker,
-                })
+                <div
+                  onMouseEnter={() => setIsHoveringPicker(true)}
+                  onMouseLeave={() => setIsHoveringPicker(false)}
+                >
+                  {renderReactionPicker({
+                    ref,
+                    style,
+                    selected: selectedReaction,
+                    onClose: toggleReactionPicker,
+                    onPick: emoji => {
+                      toggleReactionPicker(true);
+                      reactToMessage(id, {
+                        emoji,
+                        remove: emoji === selectedReaction,
+                      });
+                    },
+                    renderEmojiPicker,
+                  })}
+                </div>
               }
             </Popper>,
             reactionPickerRoot
@@ -341,6 +366,8 @@ export function TimelineMessage(props: Props): JSX.Element {
     handleReplyToMessage,
     handleReact,
     reactionPickerRoot,
+    setIsHoveringReactionButton,
+    setIsHoveringPicker,
     popperPreventOverflowModifier,
     renderReactionPicker,
     selectedReaction,
@@ -419,6 +446,8 @@ type MessageMenuProps = {
   onDownload: (() => void) | undefined;
   onReplyToMessage: (() => void) | undefined;
   onReact: (() => void) | undefined;
+  reactionPickerRoot: HTMLDivElement | undefined;
+  setIsHoveringReactionButton: React.Dispatch<React.SetStateAction<boolean>>;
 } & Pick<MessageProps, 'i18n' | 'direction'>;
 
 function MessageMenu({
@@ -431,6 +460,8 @@ function MessageMenu({
   onDownload,
   onReplyToMessage,
   onReact,
+  reactionPickerRoot,
+  setIsHoveringReactionButton,
 }: MessageMenuProps) {
   // This a menu meant for mouse use only
   /* eslint-disable jsx-a11y/interactive-supports-focus */
@@ -501,6 +532,16 @@ function MessageMenu({
                       event.preventDefault();
 
                       onReact();
+                    }}
+                    onMouseEnter={() => {
+                      setIsHoveringReactionButton(true);
+                      // Show emoji picker on hover for Telegram-like UX
+                      if (!reactionPickerRoot) {
+                        onReact();
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setIsHoveringReactionButton(false);
                     }}
                     role="button"
                     className="module-message__buttons__react"

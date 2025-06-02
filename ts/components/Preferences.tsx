@@ -884,6 +884,10 @@ export function Preferences({
                   text: i18n('icu:themeDark'),
                   value: 'dark',
                 },
+                {
+                  text: 'Blue',
+                  value: 'telegram-blue',
+                },
               ]}
               value={themeSetting}
             />

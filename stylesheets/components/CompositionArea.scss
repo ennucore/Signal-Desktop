@@ -6,9 +6,9 @@
 
 .CompositionArea {
   position: relative;
-  min-height: 42px;
-  padding-block: 10px;
-  padding-inline: 0;
+  min-height: 56px;
+  padding-block: 12px;
+  padding-inline: 16px;
 
   &__placeholder {
     flex-grow: 1;
@@ -34,6 +34,80 @@
       flex-direction: column;
       align-items: stretch;
     }
+    
+    &--main {
+      background: transparent;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin: 0;
+      align-items: center;
+      
+      @include mixins.light-theme {
+        background-color: variables.$color-gray-02;
+        border: 1px solid variables.$color-gray-15;
+      }
+      @include mixins.dark-theme {
+        background-color: variables.$color-gray-90;
+        border: 1px solid variables.$color-gray-75;
+      }
+      @include mixins.telegram-blue-theme {
+        background-color: variables.$color-white;
+        border: 1px solid variables.$telegram-blue-border;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  &__left-controls {
+    display: flex;
+    align-items: center;
+    margin-inline-end: 8px;
+    
+    .CompositionArea__button-cell {
+      margin-inline: 2px;
+      
+      &:first-child {
+        margin-inline-start: 0;
+      }
+    }
+  }
+
+  &__input-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    background: transparent;
+    border-radius: 12px;
+    position: relative;
+    min-height: 40px;
+    
+    @include mixins.light-theme {
+      background-color: variables.$color-white;
+    }
+    @include mixins.dark-theme {
+      background-color: variables.$color-gray-95;
+    }
+    @include mixins.telegram-blue-theme {
+      background-color: variables.$color-white;
+    }
+    
+    &--large {
+      border-radius: 12px;
+    }
+  }
+
+  &__right-controls {
+    display: flex;
+    align-items: center;
+    margin-inline-start: 8px;
+    
+    .CompositionArea__button-cell {
+      margin-inline: 2px;
+      
+      &:last-child {
+        margin-inline-end: 0;
+      }
+    }
   }
 
   &__button-cell {
@@ -42,15 +116,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 32px;
     flex-shrink: 0;
-
+    
     &:first-child {
-      margin-inline-start: 12px;
+      margin-inline-start: 4px;
     }
 
     &:last-child {
-      margin-inline-end: 12px;
+      margin-inline-end: 4px;
+    }
+    
+    &--attachment {
+      margin-inline: 0;
     }
   }
 
@@ -119,16 +197,44 @@
       );
     }
   }
+  
   &__input {
     flex-grow: 1;
-    position: relative;
-    margin-block: 0;
-    margin-inline: 6px;
-
-    &--large {
-      margin: 0;
+    min-height: 40px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    line-height: 1.4;
+    resize: none;
+    
+    @include mixins.light-theme {
+      color: variables.$color-gray-90;
+    }
+    @include mixins.dark-theme {
+      color: variables.$color-gray-05;
+    }
+    @include mixins.telegram-blue-theme {
+      color: variables.$color-gray-90;
+    }
+    
+    &::placeholder {
+      @include mixins.light-theme {
+        color: variables.$color-gray-45;
+      }
+      @include mixins.dark-theme {
+        color: variables.$color-gray-45;
+      }
+      @include mixins.telegram-blue-theme {
+        color: variables.$color-gray-45;
+      }
+    }
+    
+    &:focus {
+      outline: none;
     }
   }
+  
   $comp-area: &;
   &__toggle-large {
     $width: 48px;
@@ -139,7 +245,6 @@
     position: absolute;
     inset-inline-start: calc(50% - $width / 2);
 
-    // 6px coming from padding-top of .module-composition-input__input__scroller
     top: calc(0px - $height / 2 - 6px);
     border-radius: 12px 12px 0 0;
     pointer-events: none;
@@ -209,7 +314,6 @@
     flex-direction: column;
     align-items: center;
 
-    // Note the margin in &__placeholder above
     padding-block: 14px 18px;
     padding-inline: 16px;
 
@@ -253,17 +357,30 @@
   &__attach-file {
     width: 32px;
     height: 32px;
-    border-radius: 4px;
+    border-radius: 16px;
     padding: 0;
     border: none;
     background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.15s ease;
 
     @include mixins.keyboard-mode {
       &:focus {
         outline: 2px solid variables.$color-ultramarine;
+      }
+    }
+    
+    &:hover {
+      @include mixins.light-theme {
+        background-color: variables.$color-gray-05;
+      }
+      @include mixins.dark-theme {
+        background-color: variables.$color-gray-80;
+      }
+      @include mixins.telegram-blue-theme {
+        background-color: variables.$telegram-blue-light;
       }
     }
 
@@ -285,6 +402,12 @@
         @include mixins.color-svg(
           '../images/icons/v3/attach/attach.svg',
           variables.$color-gray-15
+        );
+      }
+      @include mixins.telegram-blue-theme {
+        @include mixins.color-svg(
+          '../images/icons/v3/attach/attach.svg',
+          variables.$telegram-blue-text
         );
       }
     }

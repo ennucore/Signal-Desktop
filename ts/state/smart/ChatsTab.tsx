@@ -144,6 +144,10 @@ export const SmartChatsTab = memo(function SmartChatsTab() {
     }
   }, [selectedConversationId]);
 
+  const clearConversationSelection = () => {
+    showConversation({ conversationId: undefined });
+  };
+
   return (
     <ChatsTab
       otherTabsUnreadStats={otherTabsUnreadStats}
@@ -158,6 +162,7 @@ export const SmartChatsTab = memo(function SmartChatsTab() {
       renderMiniPlayer={renderMiniPlayer}
       selectedConversationId={selectedConversationId}
       showWhatsNewModal={showWhatsNewModal}
+      clearConversationSelection={clearConversationSelection}
     />
   );
 });

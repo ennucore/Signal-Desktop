@@ -162,9 +162,16 @@
   }
 }
 
+@mixin telegram-blue-theme() {
+  .telegram-blue-theme & {
+    @content;
+  }
+}
+
 @mixin any-theme {
   &,
-  .dark-theme & {
+  .dark-theme &,
+  .telegram-blue-theme & {
     @content;
   }
 }

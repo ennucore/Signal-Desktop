@@ -86,6 +86,8 @@ $color-ultramarine-dawn: #406ec9;
 $color-ultramarine-pastel: #abc4f8;
 $color-ultramarine-pale: #d2dffb;
 $color-ultramarine: #2c6bed;
+$color-ultramarine-alpha-06: rgba($color-ultramarine, 0.06);
+$color-ultramarine-alpha-20: rgba($color-ultramarine, 0.20);
 $color-link: #315ff4;
 
 // Flat colors
@@ -318,3 +320,13 @@ $NavTabs__ItemButton__blockPadding: 10px;
 $CallControls__height: 80px;
 $CallControls__max-width: 640px;
 $CallControls__initial-width: 480px;
+
+// Telegram Blue theme colors
+$telegram-blue-primary: #2196f3;
+$telegram-blue-secondary: #1976d2;
+$telegram-blue-light: #e3f2fd;
+$telegram-blue-text: #1565c0;
+$telegram-blue-background: #f5f5f5;
+$telegram-blue-card: #ffffff;
+$telegram-blue-border: #e0e0e0;
+$telegram-blue-accent: #03a9f4;
