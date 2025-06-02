@@ -19,6 +19,7 @@ const EPHEMERAL_NAME_MAP = new Map([
   ['themeSetting', 'theme-setting'],
   ['localeOverride', 'localeOverride'],
   ['contentProtection', 'contentProtection'],
+  ['telegramTheme', 'telegram-theme'],
 ]);
 
 export class SettingsChannel extends EventEmitter {
@@ -47,6 +48,7 @@ export class SettingsChannel extends EventEmitter {
     this.#installEphemeralSetting('localeOverride');
     this.#installEphemeralSetting('spellCheck');
     this.#installEphemeralSetting('contentProtection');
+    this.#installEphemeralSetting('telegramTheme');
 
     installPermissionsHandler({ session: session.defaultSession, userConfig });
 

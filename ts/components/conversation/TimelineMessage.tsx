@@ -496,6 +496,11 @@ function MessageMenu({
                   // eslint-disable-next-line jsx-a11y/interactive-supports-focus, jsx-a11y/click-events-have-key-events
                   <div
                     ref={maybePopperRef}
+                    onMouseEnter={() => {
+                      if (!reactionPickerRoot) {
+                        onReact();
+                      }
+                    }}
                     onClick={(event: React.MouseEvent) => {
                       event.stopPropagation();
                       event.preventDefault();

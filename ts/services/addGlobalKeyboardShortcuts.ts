@@ -209,6 +209,23 @@ export function addGlobalKeyboardShortcuts(): void {
       return;
     }
 
+    // When Escape is pressed with a conversation selected and no panels
+    // open, close the conversation and return to the chat list
+    if (!conversation && selectedConversationId && key === 'Escape') {
+      window.reduxActions.conversations.onConversationClosed(
+        selectedConversationId,
+        'escape key'
+      );
+      window.reduxActions.conversations.showConversation({
+        conversationId: undefined,
+        messageId: undefined,
+      });
+
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     // Preferences - handled by Electron-managed keyboard shortcuts
 
     // Open the top-right menu for current conversation
