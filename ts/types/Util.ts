@@ -62,7 +62,7 @@ export enum SentMediaQualityType {
 export enum ThemeType {
   'light' = 'light',
   'dark' = 'dark',
-  'telegram-blue' = 'telegram-blue',
+  'blue' = 'blue',
 }
 
 export enum SystemThemeType {

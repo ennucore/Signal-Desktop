@@ -53,6 +53,7 @@ export type PropsData = {
   canRetryDeleteForEveryone: boolean;
   canReact: boolean;
   canReply: boolean;
+  hasAlternativeInteractions?: boolean;
   selectedReaction?: string;
   isTargeted?: boolean;
 } & Omit<MessagePropsData, 'renderingContext' | 'menu'>;
@@ -106,6 +107,7 @@ export function TimelineMessage(props: Props): JSX.Element {
     containerWidthBreakpoint,
     conversationId,
     direction,
+    hasAlternativeInteractions,
     i18n,
     id,
     isTargeted,
@@ -135,6 +137,14 @@ export function TimelineMessage(props: Props): JSX.Element {
   >(undefined);
   const [isHoveringReactionButton, setIsHoveringReactionButton] = useState(false);
   const [isHoveringPicker, setIsHoveringPicker] = useState(false);
+  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [isHoveringMessageCorner, setIsHoveringMessageCorner] = useState(false);
+  const [showMiniEmojiPicker, setShowMiniEmojiPicker] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [isHoveringTimestamp, setIsHoveringTimestamp] = useState(false);
+  const [showTimestampEmojiPicker, setShowTimestampEmojiPicker] = useState(false);
+  const [timestampHoverTimeout, setTimestampHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [isMouseOverMessage, setIsMouseOverMessage] = useState(false);
   const menuTriggerRef = useRef<ContextMenuTriggerType | null>(null);
 
   const isWindowWidthNotNarrow =
@@ -191,17 +201,17 @@ export function TimelineMessage(props: Props): JSX.Element {
 
   // Close picker when not hovering over either button or picker
   useEffect(() => {
-    if (reactionPickerRoot && !isHoveringReactionButton && !isHoveringPicker) {
+    if (reactionPickerRoot && !isHoveringReactionButton && !isHoveringPicker && !contextMenuOpen) {
       // Small delay to prevent flicker when moving between elements
       const timeoutId = setTimeout(() => {
-        if (!isHoveringReactionButton && !isHoveringPicker) {
+        if (!isHoveringReactionButton && !isHoveringPicker && !contextMenuOpen) {
           toggleReactionPicker(true);
         }
       }, 50);
 
       return () => clearTimeout(timeoutId);
     }
-  }, [reactionPickerRoot, isHoveringReactionButton, isHoveringPicker, toggleReactionPicker]);
+  }, [reactionPickerRoot, isHoveringReactionButton, isHoveringPicker, contextMenuOpen, toggleReactionPicker]);
 
   useEffect(() => {
     let cleanUpHandler: (() => void) | undefined;
@@ -270,7 +280,33 @@ export function TimelineMessage(props: Props): JSX.Element {
     ]
   );
 
-  const handleContextMenu = useHandleMessageContextMenu(menuTriggerRef);
+  const baseHandleContextMenu = useHandleMessageContextMenu(menuTriggerRef);
+  
+  const handleContextMenu = useCallback((event: React.MouseEvent<HTMLDivElement> | MouseEvent) => {
+    console.log('handleContextMenu called', { event, canReact, reactionPickerRoot });
+    
+    // Always call the base context menu handler first
+    baseHandleContextMenu(event);
+    
+    // Only show reaction picker for alternative style interactions
+    if (hasAlternativeInteractions) {
+      setContextMenuOpen(true);
+      if (canReact && !reactionPickerRoot) {
+        console.log('Opening reaction picker from context menu');
+        // Use mouse coordinates for positioning
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+        
+        const root = document.createElement('div');
+        root.style.position = 'fixed'; // Use fixed positioning for mouse coordinates
+        root.style.top = `${mouseY - 140}px`; // Position higher above the mouse cursor to avoid overlap
+        root.style.left = `${mouseX + 10}px`; // Position slightly to the right of mouse
+        root.style.zIndex = '1001';
+        document.body.appendChild(root);
+        setReactionPickerRoot(root);
+      }
+    }
+  }, [baseHandleContextMenu, canReact, reactionPickerRoot, hasAlternativeInteractions]);
 
   const shouldShowAdditional =
     doesMessageBodyOverflow(text || '') || !isWindowWidthNotNarrow;
@@ -283,6 +319,21 @@ export function TimelineMessage(props: Props): JSX.Element {
     }
     setQuoteByMessageId(conversationId, id);
   }, [canReply, conversationId, id, setQuoteByMessageId]);
+
+  // Handle wheel event for swipe left gesture
+  const handleWheel = useCallback((event: React.WheelEvent) => {
+    if (!hasAlternativeInteractions || !isMouseOverMessage) {
+      return;
+    }
+    
+    // Detect horizontal scroll (swipe left)
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY) && event.deltaX > 30) {
+      // Swipe left detected - trigger reply
+      if (canReply) {
+        handleReplyToMessage();
+      }
+    }
+  }, [hasAlternativeInteractions, isMouseOverMessage, canReply, handleReplyToMessage]);
 
   const handleReact = useCallback(() => {
     if (canReact) {
@@ -315,40 +366,36 @@ export function TimelineMessage(props: Props): JSX.Element {
           onDownload={handleDownload}
           onReplyToMessage={canReply ? handleReplyToMessage : undefined}
           onReact={canReact ? handleReact : undefined}
+          hasAlternativeInteractions={hasAlternativeInteractions}
           reactionPickerRoot={reactionPickerRoot}
           setIsHoveringReactionButton={setIsHoveringReactionButton}
         />
         {reactionPickerRoot &&
           createPortal(
-            <Popper
-              placement="top"
-              modifiers={[
-                offsetDistanceModifier(4),
-                popperPreventOverflowModifier(),
-              ]}
+            <div
+              onMouseEnter={() => setIsHoveringPicker(true)}
+              onMouseLeave={() => setIsHoveringPicker(false)}
             >
-              {({ ref, style }) =>
-                <div
-                  onMouseEnter={() => setIsHoveringPicker(true)}
-                  onMouseLeave={() => setIsHoveringPicker(false)}
-                >
-                  {renderReactionPicker({
-                    ref,
-                    style,
-                    selected: selectedReaction,
-                    onClose: toggleReactionPicker,
-                    onPick: emoji => {
-                      toggleReactionPicker(true);
-                      reactToMessage(id, {
-                        emoji,
-                        remove: emoji === selectedReaction,
-                      });
-                    },
-                    renderEmojiPicker,
-                  })}
-                </div>
-              }
-            </Popper>,
+              {renderReactionPicker({
+                selected: selectedReaction,
+                style: {
+                  zIndex: contextMenuOpen ? 1001 : 1000, // Ensure it appears above context menu
+                },
+                onClose: () => {
+                  toggleReactionPicker(true);
+                  setContextMenuOpen(false);
+                },
+                onPick: emoji => {
+                  toggleReactionPicker(true);
+                  setContextMenuOpen(false);
+                  reactToMessage(id, {
+                    emoji,
+                    remove: emoji === selectedReaction,
+                  });
+                },
+                renderEmojiPicker,
+              })}
+            </div>,
             reactionPickerRoot
           )}
       </Manager>
@@ -365,30 +412,200 @@ export function TimelineMessage(props: Props): JSX.Element {
     handleDownload,
     handleReplyToMessage,
     handleReact,
+    hasAlternativeInteractions,
     reactionPickerRoot,
     setIsHoveringReactionButton,
     setIsHoveringPicker,
-    popperPreventOverflowModifier,
     renderReactionPicker,
     selectedReaction,
     reactToMessage,
     renderEmojiPicker,
     toggleReactionPicker,
     id,
+    contextMenuOpen,
   ]);
+
+  // Handle hover timeout for mini emoji picker in alternative style mode
+  useEffect(() => {
+    if (hasAlternativeInteractions && isHoveringMessageCorner) {
+      const timeoutId = setTimeout(() => {
+        setShowMiniEmojiPicker(true);
+      }, 100);
+      setHoverTimeout(timeoutId);
+      
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    } else {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+        setHoverTimeout(null);
+      }
+      setShowMiniEmojiPicker(false);
+    }
+  }, [hasAlternativeInteractions, isHoveringMessageCorner]);
+
+  // Handle hover timeout for timestamp emoji picker in alternative style mode
+  useEffect(() => {
+    if (hasAlternativeInteractions && isHoveringTimestamp) {
+      const timeoutId = setTimeout(() => {
+        setShowTimestampEmojiPicker(true);
+      }, 100);
+      setTimestampHoverTimeout(timeoutId);
+      
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    } else {
+      if (timestampHoverTimeout) {
+        clearTimeout(timestampHoverTimeout);
+        setTimestampHoverTimeout(null);
+      }
+      setShowTimestampEmojiPicker(false);
+    }
+  }, [hasAlternativeInteractions, isHoveringTimestamp]);
+
+  // Cleanup hover timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+      if (timestampHoverTimeout) {
+        clearTimeout(timestampHoverTimeout);
+      }
+    };
+  }, [hoverTimeout, timestampHoverTimeout]);
+
+  // Reset context menu state when reaction picker is closed
+  useEffect(() => {
+    if (!reactionPickerRoot && contextMenuOpen) {
+      setContextMenuOpen(false);
+    }
+  }, [reactionPickerRoot, contextMenuOpen]);
+
+  // Debug menuTriggerRef
+  useEffect(() => {
+    console.log('menuTriggerRef updated:', menuTriggerRef.current);
+  }, [menuTriggerRef.current]);
 
   return (
     <>
-      <Message
-        {...props}
-        renderingContext="conversation/TimelineItem"
-        onContextMenu={handleContextMenu}
-        renderMenu={renderMenu}
-        onToggleSelect={(selected, shift) => {
-          toggleSelectMessage(conversationId, id, shift, selected);
-        }}
-        onReplyToMessage={handleReplyToMessage}
-      />
+      <div 
+        style={{ position: 'relative' }}
+        onWheel={handleWheel}
+        onMouseEnter={() => setIsMouseOverMessage(true)}
+        onMouseLeave={() => setIsMouseOverMessage(false)}
+      >
+        <Message
+          {...props}
+          renderingContext="conversation/TimelineItem"
+          onContextMenu={handleContextMenu}
+          renderMenu={renderMenu}
+          onToggleSelect={(selected, shift) => {
+            toggleSelectMessage(conversationId, id, shift, selected);
+          }}
+          onReplyToMessage={handleReplyToMessage}
+        />
+        
+        {/* Hover detection overlay for alternative style interactions */}
+        {hasAlternativeInteractions && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              width: '60px',
+              height: '40px',
+              zIndex: 1,
+            }}
+            onMouseEnter={() => setIsHoveringMessageCorner(true)}
+            onMouseLeave={() => setIsHoveringMessageCorner(false)}
+          />
+        )}
+        
+        {/* Timestamp hover detection for alternative style interactions */}
+        {hasAlternativeInteractions && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: direction === 'outgoing' ? 0 : 'auto',
+              right: direction === 'incoming' ? 0 : 'auto',
+              width: '80px',
+              height: '20px',
+              zIndex: 1,
+            }}
+            onMouseEnter={() => setIsHoveringTimestamp(true)}
+            onMouseLeave={() => setIsHoveringTimestamp(false)}
+          />
+        )}
+        
+        {/* Mini emoji picker for alternative style interactions (corner hover) */}
+        {hasAlternativeInteractions && showMiniEmojiPicker && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              background: 'rgba(0, 0, 0, 0.8)',
+              borderRadius: '20px',
+              padding: '8px',
+              fontSize: '24px',
+              zIndex: 1000,
+              cursor: 'pointer',
+            }}
+            onMouseEnter={() => {
+              // Show full reaction picker on hover
+              if (canReact && !reactionPickerRoot) {
+                toggleReactionPicker();
+              }
+            }}
+            onClick={() => {
+              // Quick react with the first emoji (❤️)
+              reactToMessage(id, {
+                emoji: '❤️',
+                remove: selectedReaction === '❤️',
+              });
+            }}
+          >
+            ❤️
+          </div>
+        )}
+        
+        {/* Mini emoji picker for timestamp hover */}
+        {hasAlternativeInteractions && showTimestampEmojiPicker && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              left: direction === 'outgoing' ? '10px' : 'auto',
+              right: direction === 'incoming' ? '10px' : 'auto',
+              background: 'rgba(0, 0, 0, 0.8)',
+              borderRadius: '20px',
+              padding: '8px',
+              fontSize: '24px',
+              zIndex: 1000,
+              cursor: 'pointer',
+            }}
+            onMouseEnter={() => {
+              // Show full reaction picker on hover
+              if (canReact && !reactionPickerRoot) {
+                toggleReactionPicker();
+              }
+            }}
+            onClick={() => {
+              // Quick react with the first emoji (❤️)
+              reactToMessage(id, {
+                emoji: '❤️',
+                remove: selectedReaction === '❤️',
+              });
+            }}
+          >
+            ❤️
+          </div>
+        )}
+      </div>
 
       <MessageContextMenu
         i18n={i18n}
@@ -446,6 +663,7 @@ type MessageMenuProps = {
   onDownload: (() => void) | undefined;
   onReplyToMessage: (() => void) | undefined;
   onReact: (() => void) | undefined;
+  hasAlternativeInteractions?: boolean;
   reactionPickerRoot: HTMLDivElement | undefined;
   setIsHoveringReactionButton: React.Dispatch<React.SetStateAction<boolean>>;
 } & Pick<MessageProps, 'i18n' | 'direction'>;
@@ -460,6 +678,7 @@ function MessageMenu({
   onDownload,
   onReplyToMessage,
   onReact,
+  hasAlternativeInteractions,
   reactionPickerRoot,
   setIsHoveringReactionButton,
 }: MessageMenuProps) {
@@ -489,6 +708,10 @@ function MessageMenu({
                   'module-message__buttons__menu',
                   `module-message__buttons__download--${direction}`
                 )}
+                style={{
+                  // Hide the button visually when alternative style interactions are enabled
+                  display: hasAlternativeInteractions ? 'none' : undefined,
+                }}
                 onDoubleClick={ev => {
                   // Prevent double click from triggering the replyToMessage action
                   ev.stopPropagation();
@@ -509,8 +732,12 @@ function MessageMenu({
         'module-message__buttons',
         `module-message__buttons--${direction}`
       )}
+      style={{
+        // Hide the entire button container when alternative style interactions are enabled
+        display: hasAlternativeInteractions ? 'none' : undefined,
+      }}
     >
-      {isWindowWidthNotNarrow && (
+      {!hasAlternativeInteractions && isWindowWidthNotNarrow && (
         <>
           {onReact && (
             <Reference>
@@ -535,7 +762,7 @@ function MessageMenu({
                     }}
                     onMouseEnter={() => {
                       setIsHoveringReactionButton(true);
-                      // Show emoji picker on hover for Telegram-like UX
+                      // Show emoji picker on hover for alternative-style UX
                       if (!reactionPickerRoot) {
                         onReact();
                       }

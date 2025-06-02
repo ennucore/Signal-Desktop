@@ -94,6 +94,7 @@ export type StorageAccessType = {
   hasSeenGroupStoryEducationSheet: boolean;
   hasViewedOnboardingStory: boolean;
   hasStoriesDisabled: boolean;
+  hasAlternativeInteractions: boolean;
   storyViewReceiptsEnabled: boolean | undefined;
   identityKeyMap: IdentityKeyMap;
   lastAttemptedToRefreshProfilesAt: number;
@@ -260,6 +261,10 @@ export type StorageAccessType = {
   versionedExpirationTimer: never;
   primarySendsSms: never;
   backupMediaDownloadIdle: never;
+  hasReadReceipts: boolean;
+  hasRelayCalls: boolean;
+  hasSpellCheck: boolean;
+  hasAlternativeInteractions: boolean;
 };
 
 export type StorageInterface = {

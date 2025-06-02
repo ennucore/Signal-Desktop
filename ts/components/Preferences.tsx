@@ -91,6 +91,7 @@ export type PropsDataType = {
   deviceName?: string;
   emojiSkinToneDefault: EmojiSkinTone;
   hasAudioNotifications?: boolean;
+  hasAlternativeInteractions: boolean;
   hasAutoConvertEmoji: boolean;
   hasAutoDownloadUpdate: boolean;
   hasAutoLaunch: boolean | undefined;
@@ -190,6 +191,7 @@ type PropsFunctionType = {
   validateBackup: () => Promise<BackupValidationResultType>;
 
   // Change handlers
+  onAlternativeInteractionsChange: CheckboxChangeHandlerType;
   onAudioNotificationsChange: CheckboxChangeHandlerType;
   onAutoConvertEmojiChange: CheckboxChangeHandlerType;
   onAutoDownloadAttachmentChange: (
@@ -302,6 +304,7 @@ export function Preferences({
   exportLocalBackup,
   getConversationsWithCustomColor,
   hasAudioNotifications,
+  hasAlternativeInteractions,
   hasAutoConvertEmoji,
   hasAutoDownloadUpdate,
   hasAutoLaunch,
@@ -345,6 +348,7 @@ export function Preferences({
   makeSyncRequest,
   navTabsCollapsed,
   notificationContent,
+  onAlternativeInteractionsChange,
   onAudioNotificationsChange,
   onAutoConvertEmojiChange,
   onAutoDownloadAttachmentChange,
@@ -886,7 +890,7 @@ export function Preferences({
                 },
                 {
                   text: 'Blue',
-                  value: 'telegram-blue',
+                  value: 'blue',
                 },
               ]}
               value={themeSetting}
@@ -983,6 +987,14 @@ export function Preferences({
             moduleClassName="Preferences__checkbox"
             name="autoConvertEmoji"
             onChange={onAutoConvertEmojiChange}
+          />
+          <Checkbox
+            checked={hasAlternativeInteractions}
+            description="Hide message buttons and show reaction picker on right-click menu"
+            label="Alternative interactions"
+            moduleClassName="Preferences__checkbox"
+            name="alternativeInteractions"
+            onChange={onAlternativeInteractionsChange}
           />
           <SettingsRow>
             <Control

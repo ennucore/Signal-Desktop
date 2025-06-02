@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import type { StorageAccessType } from './Storage.d';
 
-export const themeSettingSchema = z.enum(['system', 'light', 'dark', 'telegram-blue']);
+export const themeSettingSchema = z.enum(['system', 'light', 'dark', 'blue']);
 export type ThemeSettingType = z.infer<typeof themeSettingSchema>;
 
 // Configuration keys that only affect UI

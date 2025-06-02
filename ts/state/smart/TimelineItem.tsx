@@ -22,6 +22,7 @@ import {
   getPlatform,
 } from '../selectors/user';
 import { getTargetedMessage } from '../selectors/conversations';
+import { getItems } from '../selectors/items';
 import { useTimelineItem } from '../selectors/timeline';
 import {
   areMessagesInSameGroup,
@@ -78,6 +79,8 @@ export const SmartTimelineItem = memo(function SmartTimelineItem(
   const interactionMode = useSelector(getInteractionMode);
   const theme = useSelector(getTheme);
   const platform = useSelector(getPlatform);
+  const items = useSelector(getItems);
+  const hasAlternativeInteractions = items.hasAlternativeInteractions ?? false;
 
   const item = useTimelineItem(messageId, conversationId);
   const previousItem = useTimelineItem(previousMessageId, conversationId);
@@ -185,8 +188,14 @@ export const SmartTimelineItem = memo(function SmartTimelineItem(
       containerWidthBreakpoint={containerWidthBreakpoint}
       conversationId={conversationId}
       getPreferredBadge={getPreferredBadge}
+      hasAlternativeInteractions={hasAlternativeInteractions}
       isNextItemCallingNotification={isNextItemCallingNotification}
       isTargeted={isTargeted}
+      canRetry={item?.type === 'message' ? item.data.canRetry : false}
+      canRetryDeleteForEveryone={item?.type === 'message' ? item.data.canRetryDeleteForEveryone : false}
+      canReact={item?.type === 'message' ? item.data.canReact : false}
+      canReply={item?.type === 'message' ? item.data.canReply : false}
+      selectedReaction={item?.type === 'message' ? item.data.selectedReaction : undefined}
       renderAudioAttachment={renderAudioAttachment}
       renderContact={renderContact}
       renderEmojiPicker={renderEmojiPicker}

@@ -523,6 +523,8 @@ export function SmartPreferences(): JSX.Element {
       window.textsecure.server?.onHasStoriesDisabledChange(value);
     }
   );
+  const [hasAlternativeInteractions, onAlternativeInteractionsChange] =
+    createItemsAccess('hasAlternativeInteractions', false);
   const [hasTextFormatting, onTextFormattingChange] = createItemsAccess(
     'textFormatting',
     true
@@ -628,6 +630,7 @@ export function SmartPreferences(): JSX.Element {
         hasRelayCalls={hasRelayCalls}
         hasSpellCheck={hasSpellCheck}
         hasStoriesDisabled={hasStoriesDisabled}
+        hasAlternativeInteractions={hasAlternativeInteractions}
         hasTextFormatting={hasTextFormatting}
         hasTypingIndicators={hasTypingIndicators}
         i18n={i18n}
@@ -682,6 +685,7 @@ export function SmartPreferences(): JSX.Element {
         onSelectedSpeakerChange={onSelectedSpeakerChange}
         onSentMediaQualityChange={onSentMediaQualityChange}
         onSpellCheckChange={onSpellCheckChange}
+        onAlternativeInteractionsChange={onAlternativeInteractionsChange}
         onTextFormattingChange={onTextFormattingChange}
         onThemeChange={onThemeChange}
         onToggleNavTabsCollapse={toggleNavTabsCollapse}

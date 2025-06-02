@@ -22,7 +22,7 @@ export type SettingType<Value> = Readonly<{
   setValue: (value: Value) => Promise<Value>;
 }>;
 
-export type ThemeType = 'light' | 'dark' | 'system';
+export type ThemeType = 'light' | 'dark' | 'system' | 'blue';
 
 export type EphemeralSettings = {
   localeOverride: string | null;

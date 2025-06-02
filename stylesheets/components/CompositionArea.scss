@@ -50,10 +50,9 @@
         background-color: variables.$color-gray-90;
         border: 1px solid variables.$color-gray-75;
       }
-      @include mixins.telegram-blue-theme {
-        background-color: variables.$color-white;
-        border: 1px solid variables.$telegram-blue-border;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      @include mixins.blue-theme {
+        background: #ffffff;
+        border: 1px solid variables.$blue-border;
       }
     }
   }
@@ -87,8 +86,8 @@
     @include mixins.dark-theme {
       background-color: variables.$color-gray-95;
     }
-    @include mixins.telegram-blue-theme {
-      background-color: variables.$color-white;
+    @include mixins.blue-theme {
+      background: #ffffff;
     }
     
     &--large {
@@ -214,7 +213,7 @@
     @include mixins.dark-theme {
       color: variables.$color-gray-05;
     }
-    @include mixins.telegram-blue-theme {
+    @include mixins.blue-theme {
       color: variables.$color-gray-90;
     }
     
@@ -225,7 +224,7 @@
       @include mixins.dark-theme {
         color: variables.$color-gray-45;
       }
-      @include mixins.telegram-blue-theme {
+      @include mixins.blue-theme {
         color: variables.$color-gray-45;
       }
     }
@@ -379,8 +378,8 @@
       @include mixins.dark-theme {
         background-color: variables.$color-gray-80;
       }
-      @include mixins.telegram-blue-theme {
-        background-color: variables.$telegram-blue-light;
+      @include mixins.blue-theme {
+        background-color: variables.$blue-light;
       }
     }
 
@@ -404,10 +403,10 @@
           variables.$color-gray-15
         );
       }
-      @include mixins.telegram-blue-theme {
+      @include mixins.blue-theme {
         @include mixins.color-svg(
           '../images/icons/v3/attach/attach.svg',
-          variables.$telegram-blue-text
+          variables.$blue-text
         );
       }
     }

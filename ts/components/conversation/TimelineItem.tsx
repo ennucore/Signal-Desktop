@@ -187,6 +187,7 @@ type PropsLocalType = {
   isGroup: boolean;
   isNextItemCallingNotification: boolean;
   isTargeted: boolean;
+  hasAlternativeInteractions?: boolean;
   targetMessage: (messageId: string, conversationId: string) => unknown;
   shouldRenderDateHeader: boolean;
   onOpenEditNicknameAndNoteModal: (contactId: string) => void;
@@ -197,6 +198,11 @@ type PropsLocalType = {
   i18n: LocalizerType;
   interactionMode: InteractionModeType;
   theme: ThemeType;
+  canRetry: boolean;
+  canRetryDeleteForEveryone: boolean;
+  canReact: boolean;
+  canReply: boolean;
+  selectedReaction?: string;
 };
 
 type PropsActionsType = MessageActionsType &

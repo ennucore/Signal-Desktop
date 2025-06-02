@@ -5311,11 +5311,10 @@ button.module-calling-participants-list__contact {
         @include mixins.dark-theme {
           background-color: variables.$color-ultramarine-alpha-20;
         }
-        @include mixins.telegram-blue-theme {
-          background-color: variables.$telegram-blue-light;
+        @include mixins.blue-theme {
+          background-color: variables.$blue-light;
         }
         
-        // Add a left border accent like Telegram
         &::before {
           content: '';
           position: absolute;
@@ -5330,8 +5329,8 @@ button.module-calling-participants-list__contact {
           @include mixins.dark-theme {
             background-color: variables.$color-ultramarine;
           }
-          @include mixins.telegram-blue-theme {
-            background-color: variables.$telegram-blue-primary;
+          @include mixins.blue-theme {
+            background-color: variables.$blue-primary;
           }
         }
       }

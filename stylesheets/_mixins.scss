@@ -162,8 +162,8 @@
   }
 }
 
-@mixin telegram-blue-theme() {
-  .telegram-blue-theme & {
+@mixin blue-theme() {
+  .blue-theme & {
     @content;
   }
 }
@@ -171,7 +171,7 @@
 @mixin any-theme {
   &,
   .dark-theme &,
-  .telegram-blue-theme & {
+  .blue-theme & {
     @content;
   }
 }
@@ -1216,5 +1216,12 @@ $rtl-icon-map: (
         border: 2px solid variables.$color-gray-75;
       }
     }
+  }
+}
+
+// Usage: Styles that apply only in blue theme
+@mixin blue-theme-accent() {
+  .blue-theme & {
+    @content;
   }
 }

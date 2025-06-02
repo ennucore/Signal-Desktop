@@ -56,6 +56,22 @@ export const MessageContextMenu = ({
       // likely already scrolled into view in this case.
       avoidFocusRestoreOnBlur={interactionMode !== 'keyboard'}
     >
+      {onReplyToMessage && (
+        <MenuItem
+          attributes={{
+            className:
+              'module-message__context--icon module-message__context__reply',
+          }}
+          onClick={(event: React.MouseEvent) => {
+            event.stopPropagation();
+            event.preventDefault();
+
+            onReplyToMessage();
+          }}
+        >
+          {i18n('icu:MessageContextMenu__reply')}
+        </MenuItem>
+      )}
       {shouldShowAdditional && (
         <>
           {onDownload && (
@@ -67,22 +83,6 @@ export const MessageContextMenu = ({
               onClick={onDownload}
             >
               {i18n('icu:MessageContextMenu__download')}
-            </MenuItem>
-          )}
-          {onReplyToMessage && (
-            <MenuItem
-              attributes={{
-                className:
-                  'module-message__context--icon module-message__context__reply',
-              }}
-              onClick={(event: React.MouseEvent) => {
-                event.stopPropagation();
-                event.preventDefault();
-
-                onReplyToMessage();
-              }}
-            >
-              {i18n('icu:MessageContextMenu__reply')}
             </MenuItem>
           )}
           {onReact && (
@@ -234,18 +234,25 @@ export function useHandleMessageContextMenu(
 ): ContextMenuTriggerType['handleContextClick'] {
   return React.useCallback(
     (event: React.MouseEvent<HTMLDivElement> | MouseEvent): void => {
+      console.log('useHandleMessageContextMenu called', { event, menuTriggerRef: menuTriggerRef.current });
+      
       const selection = window.getSelection();
 
       if (selection && !selection.isCollapsed) {
+        console.log('Selection not collapsed, returning');
         return;
       }
       if (event && event.target instanceof HTMLAnchorElement) {
+        console.log('Target is anchor, returning');
         return;
       }
       if (menuTriggerRef.current) {
+        console.log('Calling handleContextClick');
         menuTriggerRef.current.handleContextClick(
           event ?? new MouseEvent('click')
         );
+      } else {
+        console.log('No menuTriggerRef.current');
       }
     },
     [menuTriggerRef]
