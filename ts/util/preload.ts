@@ -30,6 +30,7 @@ export type EphemeralSettings = {
   contentProtection: boolean;
   systemTraySetting: SystemTraySetting;
   themeSetting: ThemeType;
+  telegramTheme: boolean;
 };
 
 export type SettingsValuesType = IPCEventsValuesType & EphemeralSettings;

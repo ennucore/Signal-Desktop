@@ -83,6 +83,7 @@ export const MinimalSignalContext: MinimalSignalContextType = {
   },
   Settings: {
     themeSetting: createSetting('themeSetting', { setter: false }),
+    telegramTheme: createSetting('telegramTheme', { setter: false }),
     waitForChange: waitForSettingsChange,
   },
 };

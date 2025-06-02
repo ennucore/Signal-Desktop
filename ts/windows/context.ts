@@ -60,6 +60,7 @@ export type MinimalSignalContextType = {
   restartApp: () => void;
   Settings: {
     themeSetting: SettingType<SettingsValuesType['themeSetting']>;
+    telegramTheme: SettingType<SettingsValuesType['telegramTheme']>;
     waitForChange: () => Promise<void>;
   };
   OS: {

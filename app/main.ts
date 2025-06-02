@@ -326,6 +326,16 @@ async function getSpellCheckSetting(): Promise<boolean> {
   return true;
 }
 
+async function getTelegramThemeSetting(): Promise<boolean> {
+  const value = ephemeralConfig.get('telegram-theme');
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  ephemeralConfig.set('telegram-theme', false);
+  return false;
+}
+
 type GetThemeSettingOptionsType = Readonly<{
   ephemeralOnly?: boolean;
 }>;
@@ -373,12 +383,19 @@ async function getBackgroundColor(
   options?: GetBackgroundColorOptionsType
 ): Promise<string> {
   const theme = await getResolvedThemeSetting(options);
+  const useTelegram = await getTelegramThemeSetting();
 
   if (theme === 'light') {
+    if (useTelegram) {
+      return '#0088cc';
+    }
     return options?.signalColors ? '#3a76f0' : '#ffffff';
   }
 
   if (theme === 'dark') {
+    if (useTelegram) {
+      return '#004a7f';
+    }
     return '#121212';
   }
 

@@ -83,6 +83,7 @@ type ValuesWithGetters = Omit<
   | 'contentProtection'
   | 'systemTraySetting'
   | 'themeSetting'
+  | 'telegramTheme'
   | 'zoomFactor'
 >;
 
@@ -225,6 +226,12 @@ export function createIPCEvents(
     },
     setThemeSetting: async (value: ThemeType) => {
       await setEphemeralSetting('themeSetting', value);
+    },
+    getTelegramTheme: async () => {
+      return (await getEphemeralSetting('telegramTheme')) ?? false;
+    },
+    setTelegramTheme: async (value: boolean) => {
+      await setEphemeralSetting('telegramTheme', value);
     },
 
     // From IPCEventsCallbacksType
